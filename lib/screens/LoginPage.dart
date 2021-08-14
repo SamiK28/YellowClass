@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:yellowclass/screens/YellowClass.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -8,6 +11,30 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<User> signInWithGoogle() async {
+    try {
+      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
+      GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+      final UserCredential authResult =
+          await _auth.signInWithCredential(credential);
+      final user = authResult.user;
+
+      return user!;
+    } catch (e) {
+      print(e);
+      throw e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +58,14 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: FloatingActionButton.extended(
-                  onPressed: () {},
+                  onPressed: () async {
+                    try {
+                      final user = await signInWithGoogle();
+                      Navigator.push(context, MaterialPageRoute(builder: (ctxt) => YellowClass()));
+                    } catch (e) {
+                      print(e);
+                    }
+                  },
                   icon: Icon(
                     Icons.login,
                     color: Colors.white.withAlpha(200),
