@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:yellowclass/DataModels/MovieModel.dart';
 import 'package:yellowclass/screens/LoginPage.dart';
 import 'package:yellowclass/screens/YellowClass.dart';
 
@@ -38,7 +40,8 @@ class _HomeState extends State<Home> {
             if (data.data == false) {
               return LoginPage();
             } else {
-              return YellowClass();
+             
+              return YellowClassBuilder();
             }
           }
         },

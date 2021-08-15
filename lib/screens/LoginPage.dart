@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:yellowclass/DataModels/MovieModel.dart';
 import 'package:yellowclass/screens/YellowClass.dart';
 
 class LoginPage extends StatefulWidget {
@@ -61,7 +62,9 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () async {
                     try {
                       final user = await signInWithGoogle();
-                      Navigator.push(context, MaterialPageRoute(builder: (ctxt) => YellowClass()));
+                      await DB().initDB(user.uid);
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (ctxt) => YellowClass()));
                     } catch (e) {
                       print(e);
                     }
