@@ -22,18 +22,44 @@ class _MoviesListState extends State<MoviesList> {
         child: ValueListenableBuilder<Box>(
             valueListenable: DB().box.listenable(),
             builder: (context, data, child) {
-              // return Container(
-              //     child: Center(
-              //       child: Text("List is Empty"),
-              //     ),
-              //   );
-              return SingleChildScrollView(
-                child: Column(
-                  children: data.values
-                      .map(
-                        (e) => MovieCard(movie: e),
-                      )
-                      .toList(),
+              if (data.values.length == 0) {
+                return Container(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Image.asset(
+                            "assets/images/box.png",
+                            scale: 8,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Text("It seems a bit empty here"),
+                              Text("Tap on the '+' button to add some movies")
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 32.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: data.values
+                        .map(
+                          (e) => MovieCard(movie: e),
+                        )
+                        .toList(),
+                  ),
                 ),
               );
             }),
@@ -50,9 +76,9 @@ class MovieCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 8),
       child: Container(
-        height: size.height / 4.7,
+        height: size.height / 4.2,
         width: size.width,
         decoration: BoxDecoration(
           color: Colors.transparent,
@@ -74,162 +100,159 @@ class MovieCard extends StatelessWidget {
                 image: movie.posterPath == null || movie.posterPath!.isEmpty
                     ? null
                     : DecorationImage(
-                        image: FileImage(File(movie.posterPath!)),
-                        fit: BoxFit.fill,
+                        image: FileImage(
+                          File(
+                            movie.posterPath!,
+                          ),
+                        ),
+                        fit: BoxFit.fitHeight,
                       ),
                 borderRadius: BorderRadius.circular(16),
               ),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    movie.title,
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.w500),
-                    maxLines: 2,
-                  ),
-                  SizedBox(
-                    height: 12,
-                  ),
-                  Text(
-                    movie.directorName,
-                    style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.white60),
-                  ),
-                  Expanded(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.all(9)),
-                              foregroundColor: MaterialStateProperty.all(
-                                  Colors.white.withAlpha(250)),
-                              textStyle: MaterialStateProperty.all(
-                                  TextStyle(fontSize: 12)),
-                              overlayColor: MaterialStateProperty.all(
-                                  Colors.white.withAlpha(100)),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Colors.transparent)),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(
-                                  Icons.edit_outlined,
-                                  color: Colors.white70,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (ctxt) => AddMovie(
-                                          movie: movie,
-                                        )));
-                          },
-                        ),
-                        ElevatedButton(
-                          style: ButtonStyle(
-                              padding: MaterialStateProperty.all(
-                                  const EdgeInsets.all(9)),
-                              foregroundColor: MaterialStateProperty.all(
-                                  Colors.white.withAlpha(250)),
-                              textStyle: MaterialStateProperty.all(
-                                  TextStyle(fontSize: 12)),
-                              overlayColor: MaterialStateProperty.all(
-                                  Colors.white.withAlpha(100)),
-                              backgroundColor: MaterialStateProperty.all(
-                                  Colors.transparent)),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: Icon(Icons.delete_outline_outlined,
-                                    color: Colors.red.withAlpha(200)),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                    color: Colors.red.withAlpha(200),
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) =>
-                                  _confirmation(context),
-                            );
-                          },
-                        )
-                        // Container(
-                        //   width: 90,
-                        //   margin: const EdgeInsets.only(right: 8),
-                        //   child: ElevatedButton.icon(
-                        //     onPressed: () {},
-                        //     label: Text("Edit"),
-                        //     style: ButtonStyle(
-                        //         foregroundColor: MaterialStateProperty.all(
-                        //             Colors.white.withAlpha(250)),
-                        //         textStyle: MaterialStateProperty.all(
-                        //             TextStyle(fontSize: 12)),
-                        //         backgroundColor: MaterialStateProperty.all(
-                        //             Color(0xFF7D050B))),
-                        //     icon: Icon(
-                        //       Icons.edit_outlined,
-                        //       size: 16,
-                        //     ),
-                        //   ),
-                        // ),
-                        // // SizedBox(
-                        // //   width: 16,
-                        // // ),
-                        // OutlinedButton.icon(
-                        //     icon: Icon(
-                        //       Icons.delete_outline_outlined,
-                        //       size: 16,
-                        //     ),
-                        //     style: ButtonStyle(
-                        //       foregroundColor: MaterialStateProperty.all(
-                        //           Colors.white.withAlpha(200)),
-                        //       textStyle: MaterialStateProperty.all(
-                        //           TextStyle(fontSize: 12)),
-                        //       side: MaterialStateProperty.all(BorderSide(
-                        //           color: Color(0xFF7D050B), width: 2)),
-                        //     ),
-                        //     onPressed: () {},
-                        //     label: Text("Delete"))
-                      ],
+            Expanded(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title,
+                      softWrap: true,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontSize: 26, fontWeight: FontWeight.w500),
+                      maxLines: 2,
                     ),
-                  )
-                ],
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      "Director",
+                      softWrap: false,
+                      maxLines: 2,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.italic,
+                          color: Colors.red.shade600),
+                    ),
+                    SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      movie.directorName,
+                      softWrap: false,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white60),
+                    ),
+                    Expanded(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        // mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ElevatedButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.all(9)),
+                                foregroundColor: MaterialStateProperty.all(
+                                    Colors.white.withAlpha(250)),
+                                textStyle: MaterialStateProperty.all(
+                                    TextStyle(fontSize: 12)),
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.white.withAlpha(100)),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Color(0xFF111211))),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Icon(
+                                    Icons.edit_outlined,
+                                    color: Colors.white70,
+                                    size: 20,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Text(
+                                    "Edit",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctxt) => AddMovie(
+                                            movie: movie,
+                                          )));
+                            },
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                                padding: MaterialStateProperty.all(
+                                    const EdgeInsets.all(9)),
+                                foregroundColor: MaterialStateProperty.all(
+                                    Colors.white.withAlpha(250)),
+                                textStyle: MaterialStateProperty.all(
+                                    TextStyle(fontSize: 12)),
+                                overlayColor: MaterialStateProperty.all(
+                                    Colors.white.withAlpha(100)),
+                                backgroundColor: MaterialStateProperty.all(
+                                    Color(0xFF111211))),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Icon(
+                                    Icons.delete_outline_outlined,
+                                    color: Colors.red.withAlpha(200),
+                                    size: 20,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Text(
+                                    "Delete",
+                                    style: TextStyle(
+                                      color: Colors.red.withAlpha(200),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) =>
+                                    _confirmation(context),
+                              );
+                            },
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
           ],

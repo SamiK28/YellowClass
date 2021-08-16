@@ -61,6 +61,6 @@ class DB {
   }
 
   Future<void> deleteMovie(MovieModel model) async {
-   await model.delete();
+    await model.delete();
   }
 }

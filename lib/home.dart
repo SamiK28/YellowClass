@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:yellowclass/DataModels/MovieModel.dart';
+
+
 import 'package:yellowclass/screens/LoginPage.dart';
 import 'package:yellowclass/screens/YellowClass.dart';
+import 'package:yellowclass/services/services.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  final GoogleSignIn googleSignIn = GoogleSignIn();
+  
   static Widget loading = Center(
       child: Column(
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -40,12 +41,14 @@ class _HomeState extends State<Home> {
             if (data.data == false) {
               return LoginPage();
             } else {
-             
+             if(Services().auth.currentUser==null){
+               return LoginPage();
+             }
               return YellowClassBuilder();
             }
           }
         },
-        future: googleSignIn.isSignedIn(),
+        future: Services().googleSignIn.isSignedIn(),
       ),
     );
   }

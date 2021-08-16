@@ -1,8 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:yellowclass/DataModels/MovieModel.dart';
 import 'package:yellowclass/screens/YellowClass.dart';
+import 'package:yellowclass/services/services.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -12,30 +12,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn googleSignIn = GoogleSignIn();
-
-  Future<User> signInWithGoogle() async {
-    try {
-      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-      GoogleSignInAuthentication googleSignInAuthentication =
-          await googleSignInAccount!.authentication;
-
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleSignInAuthentication.accessToken,
-        idToken: googleSignInAuthentication.idToken,
-      );
-      final UserCredential authResult =
-          await _auth.signInWithCredential(credential);
-      final user = authResult.user;
-
-      return user!;
-    } catch (e) {
-      print(e);
-      throw e;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,21 +23,21 @@ class _LoginPageState extends State<LoginPage> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                backgroundColor: Color(0xFF7D050B),
+                backgroundColor: Colors.white60,
                 radius: 50,
                 child: Icon(
                   Icons.person_outline,
                   size: 50,
-                  color: Colors.white.withAlpha(200),
+                  color: Colors.grey.shade900,
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(36.0),
               child: FloatingActionButton.extended(
                   onPressed: () async {
                     try {
-                      final user = await signInWithGoogle();
+                      final user = await Services().signInWithGoogle();
                       await DB().initDB(user.uid);
                       Navigator.push(context,
                           MaterialPageRoute(builder: (ctxt) => YellowClass()));
