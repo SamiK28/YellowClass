@@ -1,6 +1,5 @@
 # yellowclass
 USES FLUTER 2.2 with NULL SAFETY
-A new Flutter project.
 
 ## Getting Started
 
