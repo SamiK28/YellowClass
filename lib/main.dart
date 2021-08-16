@@ -5,7 +5,7 @@ import 'package:yellowclass/home.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   runApp(App());
 }
 
