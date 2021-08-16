@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:yellowclass/screens/LoginPage.dart';
 import 'package:yellowclass/screens/YellowClass.dart';
 import 'package:yellowclass/services/services.dart';
+import 'package:yellowclass/utils/loading.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -15,20 +16,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   
-  static Widget loading = Center(
-      child: Column(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisAlignment: MainAxisAlignment.center,
-    children: [
-      CircularProgressIndicator(
-        color: Colors.red.shade700,
-      ),
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20),
-        child: Text('Loading....'),
-      )
-    ],
-  ));
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +24,7 @@ class _HomeState extends State<Home> {
         initialData: null,
         builder: (context, data) {
           if (!data.hasData || data.data == null) {
-            return loading;
+            return Loading();
           } else {
             if (data.data == false) {
               return LoginPage();

@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
 import 'package:yellowclass/home.dart';
+import 'package:yellowclass/utils/loading.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,7 +46,7 @@ class _AppState extends State<App> {
               brightness: Brightness.dark,
               scaffoldBackgroundColor: Color(0xFF111211),
             ),
-            home: Home(),
+            home: snapshot.hasData ? Home() : Loading(),
           );
         });
   }

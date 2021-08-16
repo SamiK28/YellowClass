@@ -69,6 +69,7 @@ class _AddMovieState extends State<AddMovie> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
           title: Text("Add a Movie"),
@@ -113,7 +114,7 @@ class _AddMovieState extends State<AddMovie> {
                                       File(
                                         _posterPath!,
                                       ),
-                                      height: 360,
+                                      height: size.height / 2.2,
                                     )),
                                 CircleAvatar(
                                   child: IconButton(
@@ -194,6 +195,9 @@ class _AddMovieState extends State<AddMovie> {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 48,
+              )
             ],
           )),
         ));
